@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_SEATS 10
+
+struct Seat {
+  int seat_number;
+  int status;
+  struct Seat *next;
+};
+
+struct Seat *head = NULL;
+struct Seat *current = NULL;
+
+void initSeats() {
+  int i;
+  struct Seat *seat = (struct Seat*) malloc(sizeof(struct Seat));
+  head = seat;
+  current = head;
+  for (i = 0; i < MAX_SEATS - 1; i++) {
+    seat->seat_number = i + 1;
+    seat->status = 0;
+    seat->next = (struct Seat*) malloc(sizeof(struct Seat));
+    seat = seat->next;
+  }
+  seat->seat_number = MAX_SEATS;
+  seat->status = 0;
+  seat->next = NULL;
+}
+
+void bookSeat(int seat_number) {
+  struct Seat *seat = head;
+  while (seat != NULL) {
+    if (seat->seat_number == seat_number) {
+      if (seat->status == 0) {
+        seat->status = 1;
+        printf("Seat %d booked successfully.\n", seat_number);
+        break;
+      } else {
+        printf("Seat %d is already booked.\n", seat_number);
+        break;
+      }
+    }
+    seat = seat->next;
+  }
+}
+
+void displaySeats() {
+  struct Seat *seat = head;
+  while (seat != NULL) {
+    printf("Seat %d: %s\n", seat->seat_number, seat->status == 0 ? "Available" : "Booked");
+    seat = seat->next;
+  }
+}
+
+int main() {
+  int choice, seat_number;
+  initSeats();
+  while (1) {
+    printf("\n1. Book a Seat\n");
+    printf("2. Display Available Seats\n");
+    printf("3. Exit\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    switch(choice) {
+      case 1:
+        printf("Enter seat number: ");
+        scanf("%d", &seat_number);
+        bookSeat(seat_number);
+        break;
+      case 2:
+        displaySeats();
+        break;
+      case 3:
+        exit(0);
+      default:
+        printf("Invalid choice.\n");
+        break;
+    }
+  }
+  return 0;
+}
